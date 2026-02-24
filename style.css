@@ -457,6 +457,39 @@ header h2 {
     margin-top: 0.5rem;
 }
 
+/* Quick Actions Bar */
+.quick-actions {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 50px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.quick-action-btn {
+    border: none;
+    background: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.quick-action-btn:hover {
+    background: #4361ee;
+    color: white;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
@@ -496,6 +529,19 @@ header h2 {
     .primary-btn {
         width: 100%;
     }
+    
+    .quick-actions {
+        width: 90%;
+        justify-content: space-around;
+    }
+    
+    .quick-action-btn span {
+        display: none;
+    }
+    
+    .quick-action-btn {
+        padding: 10px;
+    }
 }
 
 /* Loading States */
@@ -514,4 +560,37 @@ header h2 {
     0%, 20% { content: '.'; }
     40% { content: '..'; }
     60%, 100% { content: '...'; }
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+.dark-mode .card,
+.dark-mode .sidebar,
+.dark-mode .resource-card,
+.dark-mode .map-container,
+.dark-mode .group-card,
+.dark-mode .mentor-card,
+.dark-mode .update-card,
+.dark-mode .quick-actions {
+    background: #2d2d2d;
+    color: #ffffff;
+}
+
+.dark-mode .nav-menu li {
+    color: #aaa;
+}
+
+.dark-mode .nav-menu li:hover {
+    background: #3d3d3d;
+}
+
+.dark-mode .user-role,
+.dark-mode .location,
+.dark-mode .update-time,
+.dark-mode .mentor-topics {
+    color: #aaa;
 }
