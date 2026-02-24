@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusScope · AR map with live GPS feel</title>
+    
+    <!-- Google Fonts + Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ---------- MODERN & APPEALING THEME — fresh gradient, soft shadows, lively colors ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f5ff 0%, #e6f0fa 100%);
+            color: #1a2b3c;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            backdrop-filter: blur(2px);
+        }
+
+        /* ---------- SIDEBAR — glassmorphism with pastel ---------- */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 8px 0 32px rgba(0, 40, 80, 0.08);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            color: #1e293b;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 3rem;
+        }
+        .logo i {
+            font-size: 2.4rem;
+            color: #2d7ee9;
+            background: white;
+            padding: 8px;
+            border-radius: 18px;
+            box-shadow: 0 10px 20px -8px rgba(0, 100, 255, 0.3);
+        }
+        .logo h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1d4ed8, #5b8def);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo span {
+            font-weight: 400;
+            color: #3b6bb0;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+        .nav-menu li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+            margin: 0.5rem 0;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #33455a;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+        .nav-menu li i {
+            font-size: 1.3rem;
+            width: 28px;
+            color: #4570b0;
+        }
+        .nav-menu li.active {
+            background: white;
+            box-shadow: 0 15px 25px -8px rgba(45, 110, 220, 0.25);
+            color: #1d4ed8;
+        }
+        .nav-menu li.active i {
+            color: #1d4ed8;
+        }
+        .nav-menu li:not(.active):hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(75, 130, 220, 0.2);
+        }
+        .user-profile img {
+            width: 52px;
+            height: 52px;
+            border-radius: 40%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 8px 18px rgba(0,70,150,0.15);
+        }
+        .user-name {
+            font-weight: 700;
+            color: #0b2b4a;
+        }
+        .user-role {
+            font-size: 0.85rem;
+            color: #5d7188;
+        }
+
+        /* ---------- MAIN CONTENT — airy, cards with gradient + life ---------- */
+        .main-content {
+            flex: 1;
+            padding: 2rem 2.8rem;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.2rem;
+        }
+        header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0b2b4a;
+            letter-spacing: -0.02em;
+        }
+        .header-actions button {
+            background: white;
+            border: none;
+            font-size: 1.3rem;
+            color: #2660a9;
+            padding: 0.7rem 1.2rem;
+            border-radius: 40px;
+            margin-left: 0.75rem;
+            box-shadow: 0 8px 18px rgba(0, 70, 150, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .header-actions button:hover {
+            background: #e9f2ff;
+            transform: scale(1.02);
+        }
+
+        /* card style: soft white, rounded, shadow, fresh */
+        .card, .stat-card, .resource-card, .group-card, .mentor-card, .update-card {
+            background: white;
+            border-radius: 32px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 35px -10px rgba(20, 60, 120, 0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+        .card:hover, .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 28px 40px -12px rgba(20, 80, 170, 0.25);
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.8rem;
+            margin-bottom: 2.8rem;
+        }
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.5rem;
+            background: linear-gradient(145deg, #ffffff, #f7fcff);
+        }
+        .stat-card i {
+            font-size: 2.4rem;
+            color: #2b6ed7;
+            background: #e9f2ff;
+            padding: 0.8rem;
+            border-radius: 24px;
+        }
+        .stat-card h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #133a69;
+        }
+        .stat-card p {
+            color: #58738c;
+            font-weight: 500;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .class-item, .event-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 1px solid #deecfd;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .class-item:last-child, .event-item:last-child { border: none; }
+        .time, .event-time {
+            background: #d9eaff;
+            color: #16437e;
+            font-weight: 700;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+        .location {
+            color: #3570b2;
+            margin-left: auto;
+            font-weight: 500;
+        }
+
+        /* ---------- AR MAP — with LIVE GPS SIMULATION (moving dot, path) ---------- */
+        .map-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .campus-map {
+            position: relative;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 40px -12px #1d4a81;
+            background: #c3d9f0; /* fallback */
+        }
+        .map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 40px;
+            transition: transform 0.4s;
+            filter: brightness(0.95) contrast(1.1);
+        }
+        .map-image:hover { transform: scale(1.02); }
+
+        /* ----- GPS overlay (canvas for live path + moving dot) ----- */
+        .gps-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        #gpsCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+        }
+
+        .ar-mode-btn {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: white;
+            border: none;
+            padding: 1rem 2.2rem;
+            border-radius: 60px;
+            font-weight: 700;
+            color: #134b9e;
+            font-size: 1.2rem;
+            box-shadow: 0 18px 30px -8px #092856;
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.6);
+            pointer-events: auto; /* make button clickable */
+            z-index: 10;
+        }
+        .building-list {
+            list-style: none;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 36px;
+            padding: 1.8rem 2rem;
+            box-shadow: 0 20px 30px -8px rgba(0,45,90,0.2);
+            border: 1px solid white;
+        }
+        .building-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #aec9f0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #173459;
+            font-weight: 500;
+        }
+        .building-list li:last-child { border: none; }
+        .gps-badge {
+            background: #1d5bc0;
+            color: white;
+            border-radius: 60px;
+            padding: 0.3rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        /* ---------- RESOURCE FINDER etc (unchanged, keep appealing) ---------- */
+        .resource-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .resource-filters select, .resource-filters input {
+            background: white;
+            border: 1px solid #c7dcff;
+            border-radius: 48px;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: #1b3a62;
+            flex: 1;
+            min-width: 200px;
+            box-shadow: 0 8px 18px rgba(0,50,100,0.05);
+            outline: none;
+        }
+        .primary-btn {
+            background: #1f5fcf;
+            border: none;
+            border-radius: 48px;
+            padding: 1rem 2.5rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 12px 25px -5px #1f5fcf;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: 0.15s;
+        }
+        .primary-btn:hover { background: #124bb5; transform: scale(1.02); }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .resource-card {
+            background: white;
+            border-radius: 30px;
+            padding: 1.8rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .resource-card i { font-size: 2.4rem; color: #1e5bc0; margin-bottom: 0.5rem; }
+        .resource-status {
+            background: #dcfce8;
+            color: #0f6e3f;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            width: fit-content;
+            margin: 0.8rem 0;
+        }
+        .locate-btn {
+            background: #f1f7ff;
+            border: 1px solid #bfd8ff;
+            border-radius: 50px;
+            padding: 0.8rem;
+            font-weight: 600;
+            color: #1552b0;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .locate-btn:disabled { opacity: 0.5; }
+
+        .social-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        .group-card, .mentor-card {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            margin-bottom: 1rem;
+            background: white;
+            border-radius: 28px;
+        }
+        .mentor-card img {
+            width: 60px; height: 60px; border-radius: 30px; object-fit: cover;
+            border: 3px solid white; box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .join-btn, .connect-btn {
+            background: #deebff;
+            border: none;
+            border-radius: 40px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            color: #1c4e9e;
+            margin-left: auto;
+            cursor: pointer;
+        }
+
+        .update-card {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.2rem;
+            background: white;
+            border-radius: 30px;
+        }
+        .update-card.urgent { border-left: 8px solid #e33b3b; }
+        .update-time { color: #6784ac; font-size: 0.85rem; font-weight: 500; }
+
+        .quick-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 0.8rem;
+            background: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 80px;
+            box-shadow: 0 25px 40px -12px #0f3f7a;
+            border: 1px solid rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+        }
+        .quick-action-btn {
+            background: #1d5bc0;
+            border: none;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 10px 18px -5px #0e3b85;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quick-action-btn:hover { background: #1243a0; }
+
+        /* images */
+        .campus-map .map-image {
+            content: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=900&h=420&fit=crop&auto=format&q=80');
+        }
+        .updates-feed::before {
+            display: block;
+            content: '';
+            background: url('https://images.unsplash.com/photo-1562774053-701939374585?w=700&h=200&fit=crop&auto=format&q=80') center/cover no-repeat;
+            height: 150px;
+            border-radius: 40px;
+            margin-bottom: 2rem;
+            box-shadow: 0 22px 30px -10px #1b4780;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- sidebar -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fas fa-map-marked-alt"></i>
+            <h1>Campus<span>Scope</span></h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="active" data-page="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></li>
+            <li data-page="ar-map"><i class="fas fa-street-view"></i><span>AR Map</span></li>
+            <li data-page="resource-finder"><i class="fas fa-search"></i><span>Resource Finder</span></li>
+            <li data-page="social"><i class="fas fa-users"></i><span>Social Connect</span></li>
+            <li data-page="updates"><i class="fas fa-bell"></i><span>Updates</span></li>
+        </ul>
+        <div class="user-profile">
+            <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=80&h=80&fit=crop&auto=format&q=80" alt="profile">
+            <div>
+                <p class="user-name">Maya Rodriguez</p>
+                <p class="user-role">CS '24</p>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page active">
+            <header>
+                <h2>Welcome back, Maya 👋</h2>
+                <div class="header-actions">
+                    <button class="notifications"><i class="far fa-bell"></i></button>
+                    <button class="profile-mobile"><i class="far fa-user"></i></button>
+                </div>
+            </header>
+            <div class="quick-stats">
+                <div class="stat-card"><i class="fas fa-book"></i><div><h3>3</h3><p>Available Books</p></div></div>
+                <div class="stat-card"><i class="fas fa-chair"></i><div><h3>12</h3><p>Study Spots</p></div></div>
+                <div class="stat-card"><i class="fas fa-users"></i><div><h3>5</h3><p>Study Groups</p></div></div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="card upcoming-classes">
+                    <h3><i class="fas fa-calendar" style="color:#2469d8;"></i> Today's Schedule</h3>
+                    <div class="class-list">
+                        <div class="class-item"><span class="time">10:00 AM</span><span class="class-name">CS301 - Algorithms</span><span class="location">Hall 204 <i class="fas fa-map-marker-alt"></i></span></div>
+                        <div class="class-item"><span class="time">2:00 PM</span><span class="class-name">MATH201 - Calculus</span><span class="location">Hall 105 <i class="fas fa-map-marker-alt"></i></span></div>
+                    </div>
+                </div>
+                <div class="card nearby-events">
+                    <h3><i class="fas fa-calendar-alt" style="color:#2469d8;"></i> Campus Events</h3>
+                    <div class="event-list">
+                        <div class="event-item"><span class="event-time">3:00 PM</span><span>Tech Talk: AI in Education</span></div>
+                        <div class="event-item"><span class="event-time">5:30 PM</span><span>Coding Workshop</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AR MAP with LIVE GPS CANVAS (moving dot + path) -->
+        <section id="ar-map" class="page">
+            <header><h2>AR Map · live GPS</h2></header>
+            <div class="map-container">
+                <div class="campus-map">
+                    <img class="map-image" alt="campus base">
+                    <div class="gps-overlay">
+                        <canvas id="gpsCanvas"></canvas>
+                    </div>
+                    <button class="ar-mode-btn"><i class="fas fa-satellite-dish"></i> LIVE GPS <span style="background:#00cc66; width:10px; height:10px; border-radius:50%; display:inline-block; margin-left:6px;"></span></button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <ul class="building-list" style="flex:2;">
+                        <li><i class="fas fa-university" style="color:#1e4fb0;"></i> Science Center (50m) · CS301, PHYS101</li>
+                        <li><i class="fas fa-book" style="color:#1e4fb0;"></i> Library (120m) · 45 study spots free</li>
+                        <li><i class="fas fa-utensils" style="color:#1e4fb0;"></i> Student Union (200m) · open till 10pm</li>
+                    </ul>
+                    <div class="gps-badge"><i class="fas fa-location-dot"></i> updating every 2s</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESOURCE FINDER -->
+        <section id="resource-finder" class="page">
+            <header><h2>Resource Finder</h2></header>
+            <div class="resource-filters">
+                <select><option>All Resources</option><option>Books</option><option>Study Spots</option><option>Lab Equipment</option></select>
+                <input type="text" placeholder="Search for resources...">
+                <button class="primary-btn"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="resource-grid">
+                <div class="resource-card"><i class="fas fa-book"></i><h4>Introduction to Algorithms</h4><p>CLRS - 4th Edition</p><div class="resource-status"><i class="fas fa-check-circle"></i> Available</div><p>Library, 3F · A-12</p><button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button></div>
+                <div class="resource-card"><i class="fas fa-book"></i><h4>Deep Learning</h4><p>Ian Goodfellow</p><div class="resource-status" style="background:#fff0cf; color:#9b6f0b;"><i class="fas fa-clock"></i> Due: 02/25</div><p>Library, 2F · B-5</p><button class="locate-btn" disabled>Checked Out</button></div>
+                <div class="resource-card"><i class="fas fa-chair"></i><h4>Quiet Study Room</h4><p>Individual desks</p><div class="resource-status"><i class="fas fa-check-circle"></i> 3 spots free</div><p>Library 401</p><button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button></div>
+                <div class="resource-card"><i class="fas fa-microscope"></i><h4>Microscope - Lab Grade</h4><p>Olympus CX23</p><div class="resource-status"><i class="fas fa-check-circle"></i> Available</div><p>Science Bldg, Lab 203</p><button class="locate-btn">Reserve <i class="fas fa-calendar-check"></i></button></div>
+            </div>
+        </section>
+
+        <!-- SOCIAL -->
+        <section id="social" class="page">
+            <header><h2>Social Connect</h2></header>
+            <div class="social-container">
+                <div class="study-groups">
+                    <h3 style="color:#13375f;">📚 Study groups</h3>
+                    <div class="group-card"><div><h4>CS301 Study Group</h4><p>5 members · today 4pm</p><p><i class="fas fa-map-marker-alt"></i> Library 305</p></div><button class="join-btn">Join</button></div>
+                    <div class="group-card"><div><h4>ML Project Team</h4><p>3 members · need 2 more</p><p><i class="fas fa-map-marker-alt"></i> Virtual</p></div><button class="join-btn">Join</button></div>
+                </div>
+                <div class="mentors">
+                    <h3 style="color:#13375f;">👥 Mentors</h3>
+                    <div class="mentor-card">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&auto=format&q=80" alt="mentor">
+                        <div><h4>Dr. Sarah Chen</h4><p>Computer Science · AI</p></div>
+                        <button class="connect-btn">Connect</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UPDATES -->
+        <section id="updates" class="page">
+            <header><h2>Campus Updates</h2></header>
+            <div class="updates-feed">
+                <div class="update-card urgent"><i class="fas fa-exclamation-circle" style="color:#e33; font-size:1.8rem;"></i><div><h4>Library Hours Extended</h4><p>24/7 during exams Dec 10-20</p><span class="update-time">2 hours ago</span></div></div>
+                <div class="update-card"><i class="fas fa-calendar-alt" style="color:#2660a9;"></i><div><h4>Career Fair 2024</h4><p>March 15th – register now</p><span class="update-time">yesterday</span></div></div>
+                <div class="update-card"><i class="fas fa-trophy" style="color:#2660a9;"></i><div><h4>Hackathon registration</h4><p>48h coding, $5000 prizes</p><span class="update-time">2 days ago</span></div></div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Quick actions -->
+<div class="quick-actions">
+    <button class="quick-action-btn" onclick="alert('find study spot panel')"><i class="fas fa-chair"></i><span>Find Spot</span></button>
+    <button class="quick-action-btn" onclick="alert('shuttle tracker')"><i class="fas fa-bus"></i><span>Shuttle</span></button>
+    <button class="quick-action-btn" onclick="alert('safety line')"><i class="fas fa-shield-alt"></i><span>Safety</span></button>
+</div>
+
+<!-- GPS simulation script (moving dot along a path) -->
+<script>
+    (function() {
+        const canvas = document.getElementById('gpsCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        
+        // waypoints (percent x, y) across the map image
+        const waypoints = [
+            { x: 0.15, y: 0.3 },  // near science center
+            { x: 0.3, y: 0.45 },  // library
+            { x: 0.55, y: 0.5 },  // student union
+            { x: 0.72, y: 0.35 }, // engineering
+            { x: 0.8, y: 0.6 },   // parking
+            { x: 0.5, y: 0.75 },  // stadium
+            { x: 0.25, y: 0.7 },  // residence
+            { x: 0.15, y: 0.3 }   // back to start
+        ];
+        
+        let targetIndex = 1;  // index of next waypoint
+        let current = { x: waypoints[0].x, y: waypoints[0].y };
+        const speed = 0.002; // per frame (60fps ≈ 0.12 per sec, smooth)
+        
+        function drawDot() {
+            if (!ctx) return;
+            width = canvas.clientWidth;
+            height = canvas.clientHeight;
+            canvas.width = width;
+            canvas.height = height;
+            
+            // clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // draw path (connecting waypoints)
+            ctx.beginPath();
+            ctx.strokeStyle = '#1e4fb0';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([8, 6]);
+            ctx.moveTo(waypoints[0].x * width, waypoints[0].y * height);
+            for (let i = 1; i < waypoints.length; i++) {
+                ctx.lineTo(waypoints[i].x * width, waypoints[i].y * height);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]); // reset
+            
+            // draw waypoints as small circles
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = '#1d4ed8';
+            ctx.shadowBlur = 8;
+            for (let wp of waypoints) {
+                ctx.beginPath();
+                ctx.arc(wp.x * width, wp.y * height, 5, 0, 2*Math.PI);
+                ctx.fillStyle = '#3b82f6';
+                ctx.shadowColor = '#1e3a8a';
+                ctx.shadowBlur = 6;
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            
+            // draw moving dot (current position) with glow
+            ctx.shadowColor = '#00cc66';
+            ctx.shadowBlur = 16;
+            ctx.beginPath();
+            ctx.arc(current.x * width, current.y * height, 12, 0, 2*Math.PI);
+            ctx.fillStyle = '#00e676';
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // small inner dot
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(current.x * width, current.y * height, 5, 0, 2*Math.PI);
+            ctx.fillStyle = '#0044ff';
+            ctx.fill();
+        }
+        
+        function updatePosition() {
+            // move current towards target waypoint
+            let target = waypoints[targetIndex];
+            let dx = target.x - current.x;
+            let dy = target.y - current.y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+            
+            if (distance < 0.012) {
+                // snap and switch to next
+                current.x = target.x;
+                current.y = target.y;
+                targetIndex = (targetIndex + 1) % waypoints.length;
+            } else {
+                // move step
+                let step = speed;
+                current.x += (dx / distance) * step;
+                current.y += (dy / distance) * step;
+            }
+            drawDot();
+            requestAnimationFrame(updatePosition);
+        }
+
+        // resize observer to keep canvas crisp
+        const resizeObserver = new ResizeObserver(() => {
+            drawDot();
+        });
+        resizeObserver.observe(canvas.parentElement);
+        
+        // start animation
+        updatePosition();
+    })();
+</script>
+
+<!-- simple page switch -->
+<script>
+    document.querySelectorAll('.nav-menu li').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
+            this.classList.add('active');
+            let pageId = this.dataset.page;
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>
