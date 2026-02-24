@@ -1,49 +1,296 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CampusScope — Resource Finder (Prototype)</title>
-  <link rel="stylesheet" href="styles.css">
-  <meta name="description" content="CampusScope prototype: resource finder for campus resources (books, study spots, equipment)">
-  </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusScope - Smart Campus Navigator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
 <body>
-  <header class="site-header">CampusScope — Resource Finder (Prototype)</header>
-  <main class="container">
-    <section class="controls">
-      <input id="search" placeholder="Search resources, books, rooms..." aria-label="Search resources">
-      <select id="typeFilter" aria-label="Filter by type">
-        <option value="">All types</option>
-        <option value="book">Book</option>
-        <option value="study_spot">Study Spot</option>
-        <option value="equipment">Equipment</option>
-      </select>
-      <button id="clear">Clear</button>
-    </section>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-map-marked-alt"></i>
+                <h1>Campus<span>Scope</span></h1>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li data-page="ar-map">
+                    <i class="fas fa-street-view"></i>
+                    <span>AR Map</span>
+                </li>
+                <li data-page="resource-finder">
+                    <i class="fas fa-search"></i>
+                    <span>Resource Finder</span>
+                </li>
+                <li data-page="social">
+                    <i class="fas fa-users"></i>
+                    <span>Social Connect</span>
+                </li>
+                <li data-page="updates">
+                    <i class="fas fa-bell"></i>
+                    <span>Updates</span>
+                </li>
+            </ul>
+            
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/40" alt="Profile">
+                <div>
+                    <p class="user-name">John Student</p>
+                    <p class="user-role">Computer Science '24</p>
+                </div>
+            </div>
+        </nav>
 
-    <section class="layout">
-      <div id="map" class="map" aria-hidden="false">
-        <div class="map-label">Campus map (prototype)</div>
-      </div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <section id="dashboard" class="page active">
+                <header>
+                    <h2>Welcome back, John! 👋</h2>
+                    <div class="header-actions">
+                        <button class="notifications"><i class="far fa-bell"></i></button>
+                        <button class="profile-mobile"><i class="far fa-user"></i></button>
+                    </div>
+                </header>
 
-      <aside id="list" class="list" aria-live="polite"></aside>
-    </section>
-  </main>
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-book"></i>
+                        <div>
+                            <h3>3</h3>
+                            <p>Available Books</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chair"></i>
+                        <div>
+                            <h3>12</h3>
+                            <p>Study Spots</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h3>5</h3>
+                            <p>Study Groups</p>
+                        </div>
+                    </div>
+                </div>
 
-  <template id="item-template">
-    <div class="item">
-      <div class="item-main">
-        <div class="item-title"></div>
-        <div class="item-type"></div>
-      </div>
-      <div class="item-actions">
-        <button class="find">Find on map</button>
-        <button class="reserve">Reserve</button>
-      </div>
+                <div class="dashboard-grid">
+                    <div class="card upcoming-classes">
+                        <h3><i class="fas fa-calendar"></i> Today's Schedule</h3>
+                        <div class="class-list">
+                            <div class="class-item">
+                                <span class="time">10:00 AM</span>
+                                <span class="class-name">CS301 - Algorithms</span>
+                                <span class="location">Hall 204 <i class="fas fa-map-marker-alt"></i></span>
+                            </div>
+                            <div class="class-item">
+                                <span class="time">2:00 PM</span>
+                                <span class="class-name">MATH201 - Calculus</span>
+                                <span class="location">Hall 105 <i class="fas fa-map-marker-alt"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card nearby-events">
+                        <h3><i class="fas fa-calendar-alt"></i> Campus Events</h3>
+                        <div class="event-list">
+                            <div class="event-item">
+                                <span class="event-time">3:00 PM</span>
+                                <span class="event-name">Tech Talk: AI in Education</span>
+                            </div>
+                            <div class="event-item">
+                                <span class="event-time">5:30 PM</span>
+                                <span class="event-name">Coding Workshop</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AR Map Page -->
+            <section id="ar-map" class="page">
+                <header>
+                    <h2>AR Campus Map</h2>
+                </header>
+                
+                <div class="map-container">
+                    <div class="campus-map">
+                        <img src="https://via.placeholder.com/800x400" alt="Campus Map" class="map-image">
+                        <div class="map-overlay">
+                            <button class="ar-mode-btn">
+                                <i class="fas fa-vr-cardboard"></i> Start AR Mode
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="map-features">
+                        <div class="building-info">
+                            <h4>Nearby Buildings</h4>
+                            <ul class="building-list">
+                                <li><i class="fas fa-university"></i> Science Center (50m) - Classes: CS301, PHYS101</li>
+                                <li><i class="fas fa-book"></i> Library (120m) - 45 study spots available</li>
+                                <li><i class="fas fa-utensils"></i> Student Union (200m) - Open until 10 PM</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resource Finder Page -->
+            <section id="resource-finder" class="page">
+                <header>
+                    <h2>Resource Finder</h2>
+                </header>
+
+                <div class="resource-filters">
+                    <select id="resource-type">
+                        <option value="all">All Resources</option>
+                        <option value="books">Books</option>
+                        <option value="study-spots">Study Spots</option>
+                        <option value="lab-equipment">Lab Equipment</option>
+                    </select>
+                    <input type="text" id="search-resource" placeholder="Search for resources...">
+                    <button id="search-btn" class="primary-btn"><i class="fas fa-search"></i> Search</button>
+                </div>
+
+                <div class="resource-grid">
+                    <div class="resource-card" data-type="books">
+                        <i class="fas fa-book"></i>
+                        <h4>Introduction to Algorithms</h4>
+                        <p>CLRS - 4th Edition</p>
+                        <div class="resource-status available">
+                            <i class="fas fa-check-circle"></i> Available
+                        </div>
+                        <p class="location">Library, 3rd Floor, Section A-12</p>
+                        <button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button>
+                    </div>
+
+                    <div class="resource-card" data-type="books">
+                        <i class="fas fa-book"></i>
+                        <h4>Deep Learning</h4>
+                        <p>Ian Goodfellow</p>
+                        <div class="resource-status checked">
+                            <i class="fas fa-clock"></i> Due: 02/25
+                        </div>
+                        <p class="location">Library, 2nd Floor, Section B-5</p>
+                        <button class="locate-btn" disabled>Checked Out</button>
+                    </div>
+
+                    <div class="resource-card" data-type="study-spots">
+                        <i class="fas fa-chair"></i>
+                        <h4>Quiet Study Room</h4>
+                        <p>Individual desks, power outlets</p>
+                        <div class="resource-status available">
+                            <i class="fas fa-check-circle"></i> 3 spots free
+                        </div>
+                        <p class="location">Library, 4th Floor, Room 401</p>
+                        <button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button>
+                    </div>
+
+                    <div class="resource-card" data-type="lab-equipment">
+                        <i class="fas fa-microscope"></i>
+                        <h4>Microscope - Lab Grade</h4>
+                        <p>Olympus CX23</p>
+                        <div class="resource-status available">
+                            <i class="fas fa-check-circle"></i> Available
+                        </div>
+                        <p class="location">Science Building, Lab 203</p>
+                        <button class="locate-btn">Reserve <i class="fas fa-calendar-check"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Social Connect Page -->
+            <section id="social" class="page">
+                <header>
+                    <h2>Social Connect</h2>
+                </header>
+
+                <div class="social-container">
+                    <div class="study-groups">
+                        <h3>Recommended Study Groups</h3>
+                        <div class="group-card">
+                            <div class="group-info">
+                                <h4>CS301 Study Group</h4>
+                                <p>5 members • Meeting today at 4 PM</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Library, Room 305</p>
+                            </div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                        <div class="group-card">
+                            <div class="group-info">
+                                <h4>Machine Learning Project Team</h4>
+                                <p>3 members • Looking for 2 more</p>
+                                <p><i class="fas fa-map-marker-alt"></i> Virtual Meeting</p>
+                            </div>
+                            <button class="join-btn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="mentors">
+                        <h3>Available Mentors</h3>
+                        <div class="mentor-card">
+                            <img src="https://via.placeholder.com/50" alt="Mentor">
+                            <div>
+                                <h4>Dr. Sarah Chen</h4>
+                                <p>Computer Science • Available for advising</p>
+                                <p class="mentor-topics"><i class="fas fa-tag"></i> AI, Machine Learning, Research</p>
+                            </div>
+                            <button class="connect-btn">Connect</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Updates Page -->
+            <section id="updates" class="page">
+                <header>
+                    <h2>Campus Updates</h2>
+                </header>
+
+                <div class="updates-feed">
+                    <div class="update-card urgent">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <h4>Library Hours Extended</h4>
+                            <p>During exam week, library will be open 24/7 from Dec 10-20</p>
+                            <span class="update-time">2 hours ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="update-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <h4>Career Fair 2024</h4>
+                            <p>Register now for the annual career fair - March 15th</p>
+                            <span class="update-time">Yesterday</span>
+                        </div>
+                    </div>
+
+                    <div class="update-card">
+                        <i class="fas fa-trophy"></i>
+                        <div>
+                            <h4>Hackathon Registration Open</h4>
+                            <p>48-hour coding competition with $5000 in prizes</p>
+                            <span class="update-time">2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-  </template>
 
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
-</html>        <option value="">All types</option>
-
+</html>
