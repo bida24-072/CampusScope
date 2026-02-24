@@ -20,6 +20,7 @@ class CampusScope {
         this.setupARMode();
         this.loadUserData();
         this.checkMobileView();
+        this.setupDarkMode();
     }
     
     setupNavigation() {
@@ -91,7 +92,6 @@ class CampusScope {
     }
     
     setupSearch() {
-        // Add search functionality for resources
         console.log('Search setup complete');
     }
     
@@ -106,15 +106,12 @@ class CampusScope {
     }
     
     startARMode() {
-        // Simulate AR mode
         alert('🎮 AR Mode Activated!\n\nPoint your camera at buildings to see:\n• Class schedules\n• Available study spots\n• Friend locations\n• Real-time navigation');
         
-        // Add AR overlay effect
         const mapContainer = document.querySelector('.campus-map');
         if (mapContainer) {
             mapContainer.style.position = 'relative';
             
-            // Add AR indicator
             const arIndicator = document.createElement('div');
             arIndicator.className = 'ar-indicator';
             arIndicator.innerHTML = `
@@ -127,15 +124,12 @@ class CampusScope {
     }
     
     loadResources() {
-        // Simulate loading resources
         console.log('Loading resources...');
         
-        // Add loading state
         const resourceGrid = document.querySelector('.resource-grid');
         if (resourceGrid) {
             resourceGrid.innerHTML = '<div class="loading">Loading resources...</div>';
             
-            // Simulate API call
             setTimeout(() => {
                 this.displayResources();
             }, 1000);
@@ -211,7 +205,6 @@ class CampusScope {
     searchResources(query, type) {
         console.log(`Searching for: ${query}, Type: ${type}`);
         
-        // Simulate search
         const resourceCards = document.querySelectorAll('.resource-card');
         let visibleCount = 0;
         
@@ -228,7 +221,6 @@ class CampusScope {
             }
         });
         
-        // Show message if no results
         const resourceGrid = document.querySelector('.resource-grid');
         let noResults = resourceGrid.querySelector('.no-results');
         
@@ -257,7 +249,6 @@ class CampusScope {
     loadUpdates() {
         console.log('Loading updates...');
         
-        // Simulate loading real-time updates
         const updatesFeed = document.querySelector('.updates-feed');
         if (updatesFeed) {
             updatesFeed.innerHTML = '<div class="loading">Loading updates...</div>';
@@ -295,141 +286,4 @@ class CampusScope {
         
         const updatesFeed = document.querySelector('.updates-feed');
         updatesFeed.innerHTML = updates.map(update => `
-            <div class="update-card ${update.type === 'urgent' ? 'urgent' : ''}">
-                <i class="fas fa-${update.icon}"></i>
-                <div>
-                    <h4>${update.title}</h4>
-                    <p>${update.description}</p>
-                    <span class="update-time">${update.time}</span>
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    loadSocialData() {
-        console.log('Loading social data...');
-    }
-    
-    loadUserData() {
-        // Update user profile
-        document.querySelector('.user-name').textContent = this.user.name;
-        document.querySelector('.user-role').textContent = this.user.role;
-    }
-    
-    checkMobileView() {
-        // Handle mobile navigation
-        const handleResize = () => {
-            if (window.innerWidth <= 768) {
-                // Add mobile menu button
-                if (!document.querySelector('.mobile-menu-btn')) {
-                    const header = document.querySelector('header');
-                    const menuBtn = document.createElement('button');
-                    menuBtn.className = 'mobile-menu-btn';
-                    menuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                    menuBtn.style.background = 'none';
-                    menuBtn.style.border = 'none';
-                    menuBtn.style.fontSize = '1.5rem';
-                    menuBtn.style.cursor = 'pointer';
-                    
-                    menuBtn.addEventListener('click', () => {
-                        document.querySelector('.sidebar').classList.toggle('active');
-                    });
-                    
-                    header.insertBefore(menuBtn, header.firstChild);
-                }
-            } else {
-                // Remove mobile menu button on larger screens
-                const mobileBtn = document.querySelector('.mobile-menu-btn');
-                if (mobileBtn) {
-                    mobileBtn.remove();
-                }
-            }
-        };
-        
-        window.addEventListener('resize', handleResize);
-        handleResize();
-    }
-}
-
-// Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    const app = new CampusScope();
-    
-    // Add click handlers for locate buttons (delegation)
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('locate-btn') && !e.target.disabled) {
-            const resourceCard = e.target.closest('.resource-card');
-            if (resourceCard) {
-                const title = resourceCard.querySelector('h4').textContent;
-                alert(`📍 Navigating to: ${title}\n\nFollow the AR path on your camera view!`);
-            }
-        }
-        
-        if (e.target.classList.contains('join-btn')) {
-            const groupCard = e.target.closest('.group-card');
-            if (groupCard) {
-                const groupName = groupCard.querySelector('h4').textContent;
-                alert(`✅ You've joined: ${groupName}\n\nCheck your email for group details!`);
-                e.target.textContent = 'Joined ✓';
-                e.target.disabled = true;
-            }
-        }
-        
-        if
-(e.target.classList.contains('connect-btn')) {
-            const mentorCard = e.target.closest('.mentor-card');
-            if (mentorCard) {
-                const mentorName = mentorCard.querySelector('h4').textContent;
-                alert(`📧 Connection request sent to ${mentorName}`);
-                e.target.textContent = 'Requested ✓';
-                e.target.disabled = true;
-            }
-        }
-    });
-});
-// Add to app.js
-class LocationTracker {
-    constructor() {
-        this.watchId = null;
-        this.currentPosition = null;
-    }
-    
-    startTracking() {
-        if (navigator.geolocation) {
-            this.watchId = navigator.geolocation.watchPosition(
-                position => this.updatePosition(position),
-                error => console.error('Location error:', error),
-                { enableHighAccuracy: true, timeout: 5000 }
-            );
-        }
-    }
-    
-    updatePosition(position) {
-        this.currentPosition = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        };
-        this.showNearbyResources();
-    }
-}
-// Add heat map visualization
-class CrowdHeatmap {
-    constructor() {
-        this.locations = {
-            library: { crowdLevel: 0.8, color: '#ff4444' },
-            cafeteria: { crowdLevel: 0.3, color: '#44ff44' },
-            studentUnion: { crowdLevel: 0.6, color: '#ffaa44' }
-        };
-    }
-    
-    renderHeatmap() {
-        const canvas = document.createElement('canvas');
-        // Use heatmap.js or similar library
-        // Show crowd density across campus
-    }
-    
-    updateCrowdData(location, level) {
-        this.locations[location].crowdLevel = level;
-        this.updateColor(location);
-    }
-}
+            <div class="update-card ${update.type === 'urgent
