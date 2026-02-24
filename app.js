@@ -412,3 +412,24 @@ class LocationTracker {
         this.showNearbyResources();
     }
 }
+// Add heat map visualization
+class CrowdHeatmap {
+    constructor() {
+        this.locations = {
+            library: { crowdLevel: 0.8, color: '#ff4444' },
+            cafeteria: { crowdLevel: 0.3, color: '#44ff44' },
+            studentUnion: { crowdLevel: 0.6, color: '#ffaa44' }
+        };
+    }
+    
+    renderHeatmap() {
+        const canvas = document.createElement('canvas');
+        // Use heatmap.js or similar library
+        // Show crowd density across campus
+    }
+    
+    updateCrowdData(location, level) {
+        this.locations[location].crowdLevel = level;
+        this.updateColor(location);
+    }
+}
