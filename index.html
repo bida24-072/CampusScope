@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CampusScope — Resource Finder (Prototype)</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="CampusScope prototype: resource finder for campus resources (books, study spots, equipment)">
+  </head>
+<body>
+  <header class="site-header">CampusScope — Resource Finder (Prototype)</header>
+  <main class="container">
+    <section class="controls">
+      <input id="search" placeholder="Search resources, books, rooms..." aria-label="Search resources">
+      <select id="typeFilter" aria-label="Filter by type">
+        <option value="">All types</option>
+        <option value="book">Book</option>
+        <option value="study_spot">Study Spot</option>
+        <option value="equipment">Equipment</option>
+      </select>
+      <button id="clear">Clear</button>
+    </section>
+
+    <section class="layout">
+      <div id="map" class="map" aria-hidden="false">
+        <div class="map-label">Campus map (prototype)</div>
+      </div>
+
+      <aside id="list" class="list" aria-live="polite"></aside>
+    </section>
+  </main>
+
+  <template id="item-template">
+    <div class="item">
+      <div class="item-main">
+        <div class="item-title"></div>
+        <div class="item-type"></div>
+      </div>
+      <div class="item-actions">
+        <button class="find">Find on map</button>
+        <button class="reserve">Reserve</button>
+      </div>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>        <option value="">All types</option>
+
