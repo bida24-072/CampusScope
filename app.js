@@ -387,3 +387,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+// Add to app.js
+class LocationTracker {
+    constructor() {
+        this.watchId = null;
+        this.currentPosition = null;
+    }
+    
+    startTracking() {
+        if (navigator.geolocation) {
+            this.watchId = navigator.geolocation.watchPosition(
+                position => this.updatePosition(position),
+                error => console.error('Location error:', error),
+                { enableHighAccuracy: true, timeout: 5000 }
+            );
+        }
+    }
+    
+    updatePosition(position) {
+        this.currentPosition = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        };
+        this.showNearbyResources();
+    }
+}
