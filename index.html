@@ -3,320 +3,587 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusScope - Smart Campus Navigator</title>
+    <title>CampusScope · monochrome</title>
     
-    <!-- CSS FILES - LINKING STYLESHEET -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Google Fonts -->
+    <!-- Google Fonts + Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Optional: Add Favicon -->
-    <link rel="icon" type="image/x-icon" href="https://via.placeholder.com/16">
+    <style>
+        /* ---------- BLACK & WHITE THEME (no grey, pure b/w & subtle shadows) ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            background: #000;
+        }
+
+        /* ---------- SIDEBAR (white on black, sharp) ---------- */
+        .sidebar {
+            width: 260px;
+            background: #fff;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            border-right: 2px solid #000;
+            box-shadow: 4px 0 0 #000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: #000;
+            background: #fff;
+            padding: 6px;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 0 #000;
+        }
+        .logo h1 {
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            color: #000;
+        }
+        .logo span {
+            font-weight: 300;
+            text-decoration: underline;
+            text-underline-offset: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+        .nav-menu li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.9rem 1rem;
+            margin: 0.4rem 0;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: 0.1s linear;
+            cursor: default;
+        }
+        .nav-menu li.active {
+            border: 2px solid #000;
+            background: #fff;
+            color: #000;
+            box-shadow: 5px 5px 0 #000;
+        }
+        .nav-menu li i {
+            font-size: 1.3rem;
+            width: 24px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            border-top: 2px solid #000;
+            padding-top: 1.5rem;
+        }
+        .user-profile img {
+            width: 44px;
+            height: 44px;
+            border: 2px solid #000;
+            object-fit: cover;
+            background: #ccc;
+        }
+        .user-name {
+            font-weight: 700;
+            color: #000;
+        }
+        .user-role {
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        /* ---------- MAIN (white cards, black bg) ---------- */
+        .main-content {
+            flex: 1;
+            background: #000;
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+        }
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #fff;
+            padding-bottom: 1rem;
+        }
+        header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+        .header-actions button {
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            font-size: 1.2rem;
+            padding: 0.5rem 1rem;
+            margin-left: 0.75rem;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 #000;
+            transition: 0.1s;
+        }
+        .header-actions button:hover {
+            box-shadow: 1px 1px 0 #000;
+        }
+
+        /* cards = white, bold border */
+        .card, .stat-card, .resource-card, .group-card, .mentor-card, .update-card {
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            box-shadow: 6px 6px 0 #000;
+            padding: 1.5rem;
+            transition: 0.1s linear;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem;
+        }
+        .stat-card i {
+            font-size: 2.2rem;
+            background: #000;
+            color: #fff;
+            padding: 0.6rem;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 0 #000;
+        }
+        .stat-card h3 {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .stat-card p {
+            color: #222;
+            font-weight: 500;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .class-item, .event-item {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #aaa;
+            padding: 1rem 0;
+        }
+        .class-item:last-child, .event-item:last-child {
+            border-bottom: none;
+        }
+        .time, .event-time {
+            font-weight: 700;
+            background: #000;
+            color: #fff;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid #000;
+        }
+
+        /* ---------- AR MAP with two images (black&white photography) ---------- */
+        .map-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .campus-map {
+            position: relative;
+            border: 3px solid #fff;
+            box-shadow: 8px 8px 0 #fff;
+        }
+        .map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(100%) contrast(1.2);
+            border: none;
+        }
+        .map-overlay {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+        .ar-mode-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 1rem 2rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 5px 5px 0 #fff;
+            cursor: pointer;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .building-list {
+            list-style: none;
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            padding: 1.5rem;
+            box-shadow: 6px 6px 0 #000;
+        }
+        .building-list li {
+            padding: 0.7rem 0;
+            border-bottom: 1px dotted #000;
+        }
+
+        /* ---------- RESOURCE FINDER + FILTERS ---------- */
+        .resource-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .resource-filters select, .resource-filters input {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+            color: #000;
+            flex: 1;
+            min-width: 200px;
+            box-shadow: 4px 4px 0 #000;
+        }
+        .primary-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 0.8rem 2rem;
+            font-weight: 700;
+            box-shadow: 5px 5px 0 #fff;
+            cursor: pointer;
+        }
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+        .resource-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .resource-card i {
+            font-size: 2rem;
+        }
+        .resource-status {
+            font-weight: 700;
+            background: #000;
+            color: #fff;
+            padding: 0.3rem 0.6rem;
+            display: inline-block;
+            border: 1px solid #fff;
+            margin: 0.5rem 0;
+        }
+        .locate-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 0.5rem;
+            font-weight: 600;
+            box-shadow: 3px 3px 0 #fff;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .locate-btn:disabled {
+            opacity: 0.5;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* social & updates */
+        .social-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        .group-card, .mentor-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+        .join-btn, .connect-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 0.4rem 1.2rem;
+            font-weight: 600;
+            box-shadow: 3px 3px 0 #fff;
+            cursor: pointer;
+        }
+        .update-card {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+        }
+        .update-card.urgent {
+            background: #fff;
+            border: 4px solid #000;
+        }
+        .update-time {
+            font-size: 0.8rem;
+            color: #444;
+            font-weight: 600;
+        }
+
+        /* Quick actions bar (floating) */
+        .quick-actions {
+            position: fixed;
+            bottom: 25px;
+            right: 30px;
+            display: flex;
+            gap: 1rem;
+            background: #fff;
+            padding: 0.8rem 1.5rem;
+            border: 3px solid #000;
+            box-shadow: 8px 8px 0 #000;
+            z-index: 100;
+        }
+        .quick-action-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 0.7rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            box-shadow: 3px 3px 0 #fff;
+            cursor: pointer;
+        }
+
+        /* two relevant images inside AR map & added one more in social (mentor section) */
+        .mentor-card img {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #000;
+            object-fit: cover;
+            filter: grayscale(100%);
+        }
+        .campus-map .map-image {
+            content: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=400&fit=crop&auto=format&q=80'); /* black-white campus building */
+        }
+        /* second image inside updates? let's add a small decorative banner */
+        .updates-feed::before {
+            display: block;
+            content: '';
+            background: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=200&fit=crop&auto=format&q=80') center/cover no-repeat;
+            height: 120px;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border: 3px solid #fff;
+            filter: grayscale(1) brightness(0.9);
+            box-shadow: 6px 6px 0 #fff;
+        }
+
+        /* responsive */
+        @media (max-width: 800px) {
+            .sidebar { width: 80px; padding: 1rem 0.5rem; }
+            .sidebar .logo h1, .sidebar .user-profile div, .nav-menu li span { display: none; }
+            .nav-menu li i { font-size: 2rem; margin: 0 auto; }
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-            <div class="logo">
-                <i class="fas fa-map-marked-alt"></i>
-                <h1>Campus<span>Scope</span></h1>
+<div class="app-container">
+    <!-- SIDEBAR (pure white/black) -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fas fa-map-marked-alt"></i>
+            <h1>Campus<span>Scope</span></h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="active" data-page="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></li>
+            <li data-page="ar-map"><i class="fas fa-street-view"></i><span>AR Map</span></li>
+            <li data-page="resource-finder"><i class="fas fa-search"></i><span>Resource Finder</span></li>
+            <li data-page="social"><i class="fas fa-users"></i><span>Social Connect</span></li>
+            <li data-page="updates"><i class="fas fa-bell"></i><span>Updates</span></li>
+        </ul>
+        <div class="user-profile">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&fit=crop&auto=format&q=80" alt="profile">
+            <div>
+                <p class="user-name">Alex Rivera</p>
+                <p class="user-role">CS '24</p>
             </div>
-            
-            <ul class="nav-menu">
-                <li class="active" data-page="dashboard">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </li>
-                <li data-page="ar-map">
-                    <i class="fas fa-street-view"></i>
-                    <span>AR Map</span>
-                </li>
-                <li data-page="resource-finder">
-                    <i class="fas fa-search"></i>
-                    <span>Resource Finder</span>
-                </li>
-                <li data-page="social">
-                    <i class="fas fa-users"></i>
-                    <span>Social Connect</span>
-                </li>
-                <li data-page="updates">
-                    <i class="fas fa-bell"></i>
-                    <span>Updates</span>
-                </li>
-            </ul>
-            
-            <div class="user-profile">
-                <img src="https://via.placeholder.com/40" alt="Profile">
-                <div>
-                    <p class="user-name">John Student</p>
-                    <p class="user-role">Computer Science '24</p>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page active">
+            <header>
+                <h2>Welcome back, Alex 👋</h2>
+                <div class="header-actions">
+                    <button class="notifications"><i class="far fa-bell"></i></button>
+                    <button class="profile-mobile"><i class="far fa-user"></i></button>
+                </div>
+            </header>
+            <div class="quick-stats">
+                <div class="stat-card"><i class="fas fa-book"></i><div><h3>3</h3><p>Available Books</p></div></div>
+                <div class="stat-card"><i class="fas fa-chair"></i><div><h3>12</h3><p>Study Spots</p></div></div>
+                <div class="stat-card"><i class="fas fa-users"></i><div><h3>5</h3><p>Study Groups</p></div></div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="card upcoming-classes">
+                    <h3><i class="fas fa-calendar"></i> Today's Schedule</h3>
+                    <div class="class-list">
+                        <div class="class-item"><span class="time">10:00 AM</span><span class="class-name">CS301 - Algorithms</span><span class="location">Hall 204 <i class="fas fa-map-marker-alt"></i></span></div>
+                        <div class="class-item"><span class="time">2:00 PM</span><span class="class-name">MATH201 - Calculus</span><span class="location">Hall 105 <i class="fas fa-map-marker-alt"></i></span></div>
+                    </div>
+                </div>
+                <div class="card nearby-events">
+                    <h3><i class="fas fa-calendar-alt"></i> Campus Events</h3>
+                    <div class="event-list">
+                        <div class="event-item"><span class="event-time">3:00 PM</span><span class="event-name">Tech Talk: AI in Education</span></div>
+                        <div class="event-item"><span class="event-time">5:30 PM</span><span class="event-name">Coding Workshop</span></div>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </section>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <!-- Dashboard Page -->
-            <section id="dashboard" class="page active">
-                <header>
-                    <h2>Welcome back, John! 👋</h2>
-                    <div class="header-actions">
-                        <button class="notifications"><i class="far fa-bell"></i></button>
-                        <button class="profile-mobile"><i class="far fa-user"></i></button>
-                    </div>
-                </header>
-
-                <div class="quick-stats">
-                    <div class="stat-card">
-                        <i class="fas fa-book"></i>
-                        <div>
-                            <h3>3</h3>
-                            <p>Available Books</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-chair"></i>
-                        <div>
-                            <h3>12</h3>
-                            <p>Study Spots</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <div>
-                            <h3>5</h3>
-                            <p>Study Groups</p>
-                        </div>
+        <!-- AR MAP page (with two images: main map + building visual) -->
+        <section id="ar-map" class="page">
+            <header><h2>AR Campus Map</h2></header>
+            <div class="map-container">
+                <div class="campus-map">
+                    <!-- first image (unsplash b/w university) already set via css content -->
+                    <img class="map-image" alt="campus black white">
+                    <div class="map-overlay">
+                        <button class="ar-mode-btn"><i class="fas fa-vr-cardboard"></i> Start AR Mode</button>
                     </div>
                 </div>
-
-                <div class="dashboard-grid">
-                    <div class="card upcoming-classes">
-                        <h3><i class="fas fa-calendar"></i> Today's Schedule</h3>
-                        <div class="class-list">
-                            <div class="class-item">
-                                <span class="time">10:00 AM</span>
-                                <span class="class-name">CS301 - Algorithms</span>
-                                <span class="location">Hall 204 <i class="fas fa-map-marker-alt"></i></span>
-                            </div>
-                            <div class="class-item">
-                                <span class="time">2:00 PM</span>
-                                <span class="class-name">MATH201 - Calculus</span>
-                                <span class="location">Hall 105 <i class="fas fa-map-marker-alt"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card nearby-events">
-                        <h3><i class="fas fa-calendar-alt"></i> Campus Events</h3>
-                        <div class="event-list">
-                            <div class="event-item">
-                                <span class="event-time">3:00 PM</span>
-                                <span class="event-name">Tech Talk: AI in Education</span>
-                            </div>
-                            <div class="event-item">
-                                <span class="event-time">5:30 PM</span>
-                                <span class="event-name">Coding Workshop</span>
-                            </div>
-                        </div>
+                <div class="map-features">
+                    <div class="building-info">
+                        <h4 style="color:#fff; margin-bottom:0.5rem;">📍 Nearby buildings</h4>
+                        <ul class="building-list">
+                            <li><i class="fas fa-university"></i> Science Center (50m) - CS301, PHYS101</li>
+                            <li><i class="fas fa-book"></i> Library (120m) - 45 study spots free</li>
+                            <li><i class="fas fa-utensils"></i> Student Union (200m) - open till 10pm</li>
+                        </ul>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- AR Map Page -->
-            <section id="ar-map" class="page">
-                <header>
-                    <h2>AR Campus Map</h2>
-                </header>
-                
-                <div class="map-container">
-                    <div class="campus-map">
-                        <img src="https://via.placeholder.com/800x400" alt="Campus Map" class="map-image">
-                        <div class="map-overlay">
-                            <button class="ar-mode-btn">
-                                <i class="fas fa-vr-cardboard"></i> Start AR Mode
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="map-features">
-                        <div class="building-info">
-                            <h4>Nearby Buildings</h4>
-                            <ul class="building-list">
-                                <li><i class="fas fa-university"></i> Science Center (50m) - Classes: CS301, PHYS101</li>
-                                <li><i class="fas fa-book"></i> Library (120m) - 45 study spots available</li>
-                                <li><i class="fas fa-utensils"></i> Student Union (200m) - Open until 10 PM</li>
-                            </ul>
-                        </div>
+        <!-- RESOURCE FINDER -->
+        <section id="resource-finder" class="page">
+            <header><h2>Resource Finder</h2></header>
+            <div class="resource-filters">
+                <select id="resource-type"><option value="all">All Resources</option><option value="books">Books</option><option value="study-spots">Study Spots</option><option value="lab-equipment">Lab Equipment</option></select>
+                <input type="text" placeholder="Search resources...">
+                <button class="primary-btn"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="resource-grid">
+                <div class="resource-card"><i class="fas fa-book"></i><h4>Introduction to Algorithms</h4><p>CLRS - 4th Edition</p><div class="resource-status"><i class="fas fa-check-circle"></i> Available</div><p class="location">Library, 3F · A-12</p><button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button></div>
+                <div class="resource-card"><i class="fas fa-book"></i><h4>Deep Learning</h4><p>Ian Goodfellow</p><div class="resource-status"><i class="fas fa-clock"></i> Due: 02/25</div><p class="location">Library, 2F · B-5</p><button class="locate-btn" disabled>Checked Out</button></div>
+                <div class="resource-card"><i class="fas fa-chair"></i><h4>Quiet Study Room</h4><p>Individual desks</p><div class="resource-status"><i class="fas fa-check-circle"></i> 3 spots free</div><p class="location">Library, 4F · 401</p><button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button></div>
+                <div class="resource-card"><i class="fas fa-microscope"></i><h4>Microscope - Lab Grade</h4><p>Olympus CX23</p><div class="resource-status"><i class="fas fa-check-circle"></i> Available</div><p class="location">Science Bldg, Lab 203</p><button class="locate-btn">Reserve <i class="fas fa-calendar-check"></i></button></div>
+            </div>
+        </section>
+
+        <!-- SOCIAL CONNECT (second image inside mentor card) -->
+        <section id="social" class="page">
+            <header><h2>Social Connect</h2></header>
+            <div class="social-container">
+                <div class="study-groups">
+                    <h3 style="color:#fff;">📚 Recommended Study Groups</h3>
+                    <div class="group-card"><div><h4>CS301 Study Group</h4><p>5 members • today 4pm</p><p><i class="fas fa-map-marker-alt"></i> Library 305</p></div><button class="join-btn">Join</button></div>
+                    <div class="group-card"><div><h4>ML Project Team</h4><p>3 members • need 2 more</p><p><i class="fas fa-map-marker-alt"></i> Virtual</p></div><button class="join-btn">Join</button></div>
+                </div>
+                <div class="mentors">
+                    <h3 style="color:#fff;">👥 Available Mentors</h3>
+                    <div class="mentor-card">
+                        <!-- second image (professor style) -->
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60&h=60&fit=crop&auto=format&q=80" alt="mentor">
+                        <div><h4>Dr. Sarah Chen</h4><p>Computer Science</p><p class="mentor-topics"><i class="fas fa-tag"></i> AI, ML, Research</p></div>
+                        <button class="connect-btn">Connect</button>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- Resource Finder Page -->
-            <section id="resource-finder" class="page">
-                <header>
-                    <h2>Resource Finder</h2>
-                </header>
+        <!-- UPDATES page (extra image via pseudo-element already) -->
+        <section id="updates" class="page">
+            <header><h2>Campus Updates</h2></header>
+            <div class="updates-feed">
+                <!-- pseudo-element shows second image (campus library) -->
+                <div class="update-card urgent"><i class="fas fa-exclamation-circle"></i><div><h4>Library Hours Extended</h4><p>24/7 during exams Dec 10-20</p><span class="update-time">2 hours ago</span></div></div>
+                <div class="update-card"><i class="fas fa-calendar-alt"></i><div><h4>Career Fair 2024</h4><p>March 15th – register now</p><span class="update-time">yesterday</span></div></div>
+                <div class="update-card"><i class="fas fa-trophy"></i><div><h4>Hackathon registration</h4><p>48h coding, $5000 prizes</p><span class="update-time">2 days ago</span></div></div>
+            </div>
+        </section>
+    </main>
+</div>
 
-                <div class="resource-filters">
-                    <select id="resource-type">
-                        <option value="all">All Resources</option>
-                        <option value="books">Books</option>
-                        <option value="study-spots">Study Spots</option>
-                        <option value="lab-equipment">Lab Equipment</option>
-                    </select>
-                    <input type="text" id="search-resource" placeholder="Search for resources...">
-                    <button id="search-btn" class="primary-btn"><i class="fas fa-search"></i> Search</button>
-                </div>
+<!-- Quick actions -->
+<div class="quick-actions">
+    <button class="quick-action-btn" onclick="alert('find study spot panel')"><i class="fas fa-chair"></i><span>Find Spot</span></button>
+    <button class="quick-action-btn" onclick="alert('shuttle tracker')"><i class="fas fa-bus"></i><span>Shuttle</span></button>
+    <button class="quick-action-btn" onclick="alert('safety line')"><i class="fas fa-shield-alt"></i><span>Safety</span></button>
+</div>
 
-                <div class="resource-grid">
-                    <div class="resource-card" data-type="books">
-                        <i class="fas fa-book"></i>
-                        <h4>Introduction to Algorithms</h4>
-                        <p>CLRS - 4th Edition</p>
-                        <div class="resource-status available">
-                            <i class="fas fa-check-circle"></i> Available
-                        </div>
-                        <p class="location">Library, 3rd Floor, Section A-12</p>
-                        <button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button>
-                    </div>
-
-                    <div class="resource-card" data-type="books">
-                        <i class="fas fa-book"></i>
-                        <h4>Deep Learning</h4>
-                        <p>Ian Goodfellow</p>
-                        <div class="resource-status checked">
-                            <i class="fas fa-clock"></i> Due: 02/25
-                        </div>
-                        <p class="location">Library, 2nd Floor, Section B-5</p>
-                        <button class="locate-btn" disabled>Checked Out</button>
-                    </div>
-
-                    <div class="resource-card" data-type="study-spots">
-                        <i class="fas fa-chair"></i>
-                        <h4>Quiet Study Room</h4>
-                        <p>Individual desks, power outlets</p>
-                        <div class="resource-status available">
-                            <i class="fas fa-check-circle"></i> 3 spots free
-                        </div>
-                        <p class="location">Library, 4th Floor, Room 401</p>
-                        <button class="locate-btn">Locate <i class="fas fa-map-marker-alt"></i></button>
-                    </div>
-
-                    <div class="resource-card" data-type="lab-equipment">
-                        <i class="fas fa-microscope"></i>
-                        <h4>Microscope - Lab Grade</h4>
-                        <p>Olympus CX23</p>
-                        <div class="resource-status available">
-                            <i class="fas fa-check-circle"></i> Available
-                        </div>
-                        <p class="location">Science Building, Lab 203</p>
-                        <button class="locate-btn">Reserve <i class="fas fa-calendar-check"></i></button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Social Connect Page -->
-            <section id="social" class="page">
-                <header>
-                    <h2>Social Connect</h2>
-                </header>
-
-                <div class="social-container">
-                    <div class="study-groups">
-                        <h3>Recommended Study Groups</h3>
-                        <div class="group-card">
-                            <div class="group-info">
-                                <h4>CS301 Study Group</h4>
-                                <p>5 members • Meeting today at 4 PM</p>
-                                <p><i class="fas fa-map-marker-alt"></i> Library, Room 305</p>
-                            </div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                        <div class="group-card">
-                            <div class="group-info">
-                                <h4>Machine Learning Project Team</h4>
-                                <p>3 members • Looking for 2 more</p>
-                                <p><i class="fas fa-map-marker-alt"></i> Virtual Meeting</p>
-                            </div>
-                            <button class="join-btn">Join</button>
-                        </div>
-                    </div>
-
-                    <div class="mentors">
-                        <h3>Available Mentors</h3>
-                        <div class="mentor-card">
-                            <img src="https://via.placeholder.com/50" alt="Mentor">
-                            <div>
-                                <h4>Dr. Sarah Chen</h4>
-                                <p>Computer Science • Available for advising</p>
-                                <p class="mentor-topics"><i class="fas fa-tag"></i> AI, Machine Learning, Research</p>
-                            </div>
-                            <button class="connect-btn">Connect</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Updates Page -->
-            <section id="updates" class="page">
-                <header>
-                    <h2>Campus Updates</h2>
-                </header>
-
-                <div class="updates-feed">
-                    <div class="update-card urgent">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <div>
-                            <h4>Library Hours Extended</h4>
-                            <p>During exam week, library will be open 24/7 from Dec 10-20</p>
-                            <span class="update-time">2 hours ago</span>
-                        </div>
-                    </div>
-                    
-                    <div class="update-card">
-                        <i class="fas fa-calendar-alt"></i>
-                        <div>
-                            <h4>Career Fair 2024</h4>
-                            <p>Register now for the annual career fair - March 15th</p>
-                            <span class="update-time">Yesterday</span>
-                        </div>
-                    </div>
-
-                    <div class="update-card">
-                        <i class="fas fa-trophy"></i>
-                        <div>
-                            <h4>Hackathon Registration Open</h4>
-                            <p>48-hour coding competition with $5000 in prizes</p>
-                            <span class="update-time">2 days ago</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Quick Actions Bar (New Feature) -->
-    <div class="quick-actions">
-        <button class="quick-action-btn" onclick="quickFindStudySpot()">
-            <i class="fas fa-chair"></i>
-            <span>Find Spot</span>
-        </button>
-        <button class="quick-action-btn" onclick="quickTrackShuttle()">
-            <i class="fas fa-bus"></i>
-            <span>Shuttle</span>
-        </button>
-        <button class="quick-action-btn" onclick="quickEmergency()">
-            <i class="fas fa-shield-alt"></i>
-            <span>Safety</span>
-        </button>
-    </div>
-
-    <!-- JAVASCRIPT FILES - LINKING APP.JS -->
-    <script src="app.js"></script>
+<!-- minimal js for page switching (simple) -->
+<script>
+    // activate page on li click (no hash, just demonstration)
+    document.querySelectorAll('.nav-menu li').forEach(item => {
+        item.addEventListener('click', function(e) {
+            document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
+            this.classList.add('active');
+            let pageId = this.dataset.page; // dashboard, ar-map, etc.
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        });
+    });
+</script>
 </body>
 </html>
