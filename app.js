@@ -376,3 +376,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if
+(e.target.classList.contains('connect-btn')) {
+            const mentorCard = e.target.closest('.mentor-card');
+            if (mentorCard) {
+                const mentorName = mentorCard.querySelector('h4').textContent;
+                alert(`📧 Connection request sent to ${mentorName}`);
+                e.target.textContent = 'Requested ✓';
+                e.target.disabled = true;
+            }
+        }
+    });
+});
